@@ -3,7 +3,7 @@
 _This project has no affiliation with Microsoft or the Maui/Xamarin teams._
 
 ```
-dotnet add package Maui.Games
+dotnet add package Plugin.Games
 ```
 
 
@@ -35,8 +35,8 @@ Microsoft.Maui.Platform.GameKit.
 /src/
 	/GamesTest/
 		GamesTest.csproj
-	/Maui.Games/
-		Maui.Games.csproj
+	/Plugin.Games/
+		Plugin.Games.csproj
 
 
 ## Setup
@@ -45,13 +45,13 @@ https://developer.android.com/games/pgs/console/setup
 
 1. First initialize the project by adding the package to your project.
 ```
-dotnet add package Maui.Games
+dotnet add package Plugin.Games
 ```
 
 2. Override the Windows.OnCreated event in the App class for your project and call "await CrossGames.Current.SignInSilently" to sign into the Games SDK for both Android or iOS.
 
 ```C#
-using Maui.Games;
+using Plugin.Games;
 
 namespace GamesTest;
 
