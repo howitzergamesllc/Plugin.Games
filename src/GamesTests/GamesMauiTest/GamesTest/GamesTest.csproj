@@ -65,11 +65,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.20" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.30" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="../../../Plugin.Games/Plugin.Games.csproj" Version="10.0.20" />
+		<ProjectReference Include="../../../Plugin.Games/Plugin.Games.csproj" Version="10.0.30" />
 	</ItemGroup>
 </Project>

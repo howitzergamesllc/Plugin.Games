@@ -258,5 +258,7 @@ catch (Exception ex)
 
 
 ## Release notes
+- Version 10.0.30
+	- Release abstracting apple game center.
 - Version 10.0.20
 	- Initial release abstracting Play Games Services from android.
