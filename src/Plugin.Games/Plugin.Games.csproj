@@ -35,7 +35,7 @@
     <NeutralLanguage>en</NeutralLanguage>
     <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
     <SkipValidateMauiImplicitPackageReferences>true</SkipValidateMauiImplicitPackageReferences>
-	  <PackageReadmeFile>Readme.md</PackageReadmeFile>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>GamesIcon.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
@@ -89,9 +89,9 @@
   <ItemGroup>
     <None Include="..\..\BuildNotes(PC).md" Pack="false" PackagePath="" />
     <None Include="..\..\BuildNotes(MAC).md" Pack="false" PackagePath="" />
-    <None Include="..\..\..\art\GamesIcon.png" Pack="True" PackagePath="GamesIcon.png" />
-    <None Include="..\..\..\License.md" Pack="True" PackagePath="License.md" />
-    <None Include="..\..\README.md" Pack="true" PackagePath="" />
+    <None Include="..\..\art\GamesIcon.png" Pack="True" PackagePath="GamesIcon.png" />
+    <None Include="..\..\License.md" Pack="True" PackagePath="License.md" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="README.md" />
     <None Include="..\..\docs\*.md" Pack="true" PackagePath="docs\" />
   </ItemGroup>
 </Project>
