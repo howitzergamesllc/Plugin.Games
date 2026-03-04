@@ -12,7 +12,6 @@
 		<Button Text="Get Achievements" x:Name="ButtonGetAchievements" Clicked="ButtonGetAchievements_Clicked"/>
 		<Button Text="Reveal Achievement" x:Name="ButtonRevealAchievement" Clicked="ButtonRevealAchievement_Clicked"/>
 		<Button Text="Unlock Achievement" x:Name="ButtonUnlockAchievement" Clicked="ButtonUnlockAchievement_Clicked"/>
-		<Button Text="Get Leaderboards Data" x:Name="ButtonGetLeaderBoardsData" Clicked="ButtonGetLeaderBoardsData_Clicked"/>
 		<Button Text="Get Specific Leaderboard Data" x:Name="ButtonGetSpecificLeaderBoardData" Clicked="ButtonGetSpecificLeaderBoardData_Clicked"/>
 		<Button Text="Get Top Scores" x:Name="ButtonGetTopScores" Clicked="ButtonGetTopScores_Clicked"/>
 		<Button Text="Get Player Centered Scores" x:Name="ButtonGetPlayerCenteredScores" Clicked="ButtonGetPlayerCenteredScores_Clicked"/>

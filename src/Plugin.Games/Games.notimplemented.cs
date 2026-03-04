@@ -35,8 +35,8 @@ namespace Plugin.Games
 #if ANDROID
         public override Task ShowLeaderBoardsAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan, GamesLeaderboardCollection collection) => throw CrossGames.NotImplemented();
         public override Task ShowLeaderBoardsAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan) => throw CrossGames.NotImplemented();
-#endif
         public override Task<IReadOnlyList<GamesLeaderboard>> GetLeaderBoardDataAsync() => throw CrossGames.NotImplemented();
+#endif
         public override Task<GamesLeaderboard> GetLeaderBoardDataAsync(string leaderBoardId) => throw CrossGames.NotImplemented();
 #if ANDROID
         public override Task<IReadOnlyList<GamesLeaderboardScore>> GetMoreScoresAsync(int maxResults, GamesPageDirection direction) => throw CrossGames.NotImplemented();

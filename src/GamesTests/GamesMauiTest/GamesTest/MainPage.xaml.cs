@@ -145,30 +145,6 @@ namespace GamesTest
 			}
         }
 
-        private async void ButtonGetLeaderBoardsData_Clicked(object sender, EventArgs e)
-		{
-			try
-			{
-				var leaderboards = await CrossGames.Current.GetLeaderBoardDataAsync();				
-				if (leaderboards == null || leaderboards.Count() == 0)
-				{
-					Debug.WriteLine("No leaderboards returned.");
-				}
-				else
-				{
-					foreach (var leaderboard in leaderboards)
-					{
-						Debug.WriteLine($"Leaderboard: {leaderboard.LeaderboardId}, Name: {leaderboard.DisplayName}, Apple Type: {leaderboard.Apple.LeaderboardType}, Android Total Scores on Leaderboard: {leaderboard.Android.NumScores}");
-					}
-					await DisplayAlertAsync("Leaderboards", $"Leaderboard Count {leaderboards.Count}", "Close");
-				}
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
-        }
-
         private async void ButtonGetSpecificLeaderBoardData_Clicked(object sender, EventArgs e)
 		{
 			try

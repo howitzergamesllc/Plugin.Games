@@ -6,6 +6,15 @@ _This project has no affiliation with Microsoft or the Maui/Xamarin teams._
 dotnet add package Plugin.Games
 ```
 
+# Nuget.org
+[![NuGet](https://img.shields.io/nuget/v/Plugin.Games.svg)](https://www.nuget.org/packages/Plugin.Games/)
+
+## Package Reference
+```xml
+<PropertyGroup>
+	<PackageReference Include="Plugin.Games" Version="10.0.40" />
+</PropertyGroup>
+```
 
 ## Features
 
@@ -258,6 +267,9 @@ catch (Exception ex)
 
 
 ## Release notes
+- Version 10.0.40
+	- Made calls thread safe.
+	- Fixed obsolete calls.
 - Version 10.0.30
 	- Release abstracting apple game center.
 - Version 10.0.20

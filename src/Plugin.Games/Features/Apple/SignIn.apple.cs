@@ -1,10 +1,10 @@
 
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 using UIKit;
 using GameKit;
 using Microsoft.Maui.ApplicationModel;
-using System.Linq;
 
 namespace Plugin.Games
 {
@@ -56,13 +56,17 @@ namespace Plugin.Games
             player.AuthenticateHandler = (viewController, error) =>
             {
                 if (viewController != null)
-                {    
-                    var window = UIApplication.SharedApplication
+                {             
+                    var windowScene = UIApplication.SharedApplication
                         .ConnectedScenes
                         .OfType<UIWindowScene>()
-                        .FirstOrDefault(scene => scene.ActivationState == UISceneActivationState.ForegroundActive)?
+                        .FirstOrDefault(scene => 
+                            scene.ActivationState == UISceneActivationState.ForegroundActive);
+
+                    var window = windowScene?
                         .Windows
                         .FirstOrDefault(w => w.IsKeyWindow);
+
                     var rootViewController = window?.RootViewController;
                     rootViewController?.PresentViewController(viewController, true, null);
                     return;

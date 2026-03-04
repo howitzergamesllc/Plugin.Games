@@ -122,12 +122,13 @@ namespace Plugin.Games
         /// <param name="timeSpan"> to retrieve data for. Valid values are <see cref="GamesLeaderBoardTimeSpan.Daily"/>, <see cref="GamesLeaderBoardTimeSpan.AllTime"/>, and <see cref="GamesLeaderBoardTimeSpan.Weekly"/></param>
         /// <returns>A Task that completes when the leaderboard is displayed.</returns>
         public abstract Task ShowLeaderBoardsAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan);
-#endif
+
         /// <summary>
         /// Asynchronously gets a list of leaderboard metadata.
         /// </summary>
         /// <returns>A Task that returns a <see cref="IReadOnlyList{T}"/> of <see cref="GamesLeaderboard"/></returns>
         public abstract Task<IReadOnlyList<GamesLeaderboard>> GetLeaderBoardDataAsync();
+#endif
 
         /// <summary>
         /// Asynchronously gets a single leaderboard metadata.

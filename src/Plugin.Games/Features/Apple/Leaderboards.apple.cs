@@ -29,42 +29,18 @@ namespace Plugin.Games
         /// <inheritdoc />
         public override Task ShowLeaderBoardsAsync(string leaderBoardId)
         {
+            if(!HasTriggerAccessPointWithInfo)
+                return Task.CompletedTask;
+
             return MainThread.InvokeOnMainThreadAsync(() =>
             {
                 try
                 {
-                    if (HasTriggerAccessPointWithInfo)
-                    {
-                        GKAccessPoint.Shared.TriggerAccessPointWithLeaderboardSetId(leaderBoardId, () => {});
-                    }
+                    GKAccessPoint.Shared.TriggerAccessPointWithLeaderboardSetId(leaderBoardId, () => {});
                 }
                 catch (Exception ex)
                 {
                     throw new GamesException(GamesError.FailedToShowLeaderboard, ex);
-                }
-            });
-        }
-
-        /// <inheritdoc />
-        public override async Task<IReadOnlyList<GamesLeaderboard>> GetLeaderBoardDataAsync()
-        {
-            return await MainThread.InvokeOnMainThreadAsync(async() =>
-            {
-                try
-                {
-                    var leaderboards = await GKLeaderboard.LoadLeaderboardsAsync();
-
-                    var result = new List<GamesLeaderboard>();
-                    foreach (var lb in leaderboards)
-                    {
-                        var image = await lb.LoadImageAsync();
-                        result.Add(lb.ToGamesLeaderboard(image));
-                    }
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    throw new GamesException(GamesError.FailedToLoadLeaderboard, ex);
                 }
             });
         }
