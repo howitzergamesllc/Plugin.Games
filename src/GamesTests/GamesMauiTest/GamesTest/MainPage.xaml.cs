@@ -18,8 +18,10 @@ namespace GamesTest
 			}
 			catch (Exception ex)
 			{
-				Debug.WriteLine(ex.Message);
-			}
+				Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+				if(ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
 		}
 
         private async void ButtonOpenLeaderBoards_Clicked(object sender, EventArgs e)
@@ -29,9 +31,11 @@ namespace GamesTest
 				await CrossGames.Current.ShowLeaderBoardsAsync();
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
 		}
 
         private async void ButtonOpenLeaderBoard_Clicked(object sender, EventArgs e)
@@ -41,18 +45,20 @@ namespace GamesTest
 				await CrossGames.Current.ShowLeaderBoardsAsync("leaderboardTest1");
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
 		}
 
 		private async void ButtonIncrementAchievement_Clicked(object sender, EventArgs e)
 		{
 			string achievementId = "";
 			#if ANDROID
-			achievementId = "CgkIq93xr-odEAIQBQ";
+			achievementId = "asdkDKJF-dDKJSLF";
 			#elif IOS || MACCATALYST
-			achievementId = "luckyseven";
+			achievementId = "achievementid";
 			#endif
 			try
 			{
@@ -60,29 +66,33 @@ namespace GamesTest
 				Debug.WriteLine($"IncrementAchievementProgressAsync returned: {success}");
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
 		}
 
 		private async void ButtonSetAchievement_Clicked(object sender, EventArgs e)
 		{
 			string achievementId = "";
-			#if ANDROID
-			achievementId = "CgkIq93xr-odEAIQBQ";
-			#elif IOS || MACCATALYST
-			achievementId = "luckyseven";
-			#endif
-			try
-			{
+#if ANDROID
+            achievementId = "asdkDKJF-dDKJSLF";
+#elif IOS || MACCATALYST
+			achievementId = "achievementid";
+#endif
+            try
+            {
 				var success = await CrossGames.Current.SetAchievementProgressAsync(achievementId, App.IsAndroid ? 6 : 90);
-				await DisplayAlertAsync("Lucky Seven", $"Unlocked? {success}", "Close");
+				await DisplayAlertAsync("Test Achievement", $"Unlocked? {success}", "Close");
 				Debug.WriteLine($"SetAchievementProgressAsync returned: {success}");
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
 		}
 
 		private async void ButtonGetAchievements_Clicked(object sender, EventArgs e)
@@ -104,9 +114,11 @@ namespace GamesTest
 				}
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
 		}
 
         private async void ButtonRevealAchievement_Clicked(object sender, EventArgs e)
@@ -114,17 +126,19 @@ namespace GamesTest
 			try
 			{
 				string achievementId = "";
-				#if ANDROID
-				achievementId = "CgkIq93xr-odEAIQBQ";
-				#elif IOS || MACCATALYST
-				achievementId = "luckyseven";
-				#endif
-				await CrossGames.Current.RevealAchievementAsync(achievementId);
+#if ANDROID
+                achievementId = "asdkDKJF-dDKJSLF";
+#elif IOS || MACCATALYST
+			achievementId = "achievementid";
+#endif
+                await CrossGames.Current.RevealAchievementAsync(achievementId);
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
         }
 
         private async void ButtonUnlockAchievement_Clicked(object sender, EventArgs e)
@@ -132,17 +146,19 @@ namespace GamesTest
 			try
 			{
 				string achievementId = "";
-				#if ANDROID
-				achievementId = "CgkIq93xr-odEAIQBQ";
-				#elif IOS || MACCATALYST
-				achievementId = "luckyseven";
-				#endif
-				await CrossGames.Current.UnlockAchievementAsync(achievementId);
+#if ANDROID
+                achievementId = "asdkDKJF-dDKJSLF";
+#elif IOS || MACCATALYST
+			achievementId = "achievementname";
+#endif
+                await CrossGames.Current.UnlockAchievementAsync(achievementId);
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
         }
 
         private async void ButtonGetSpecificLeaderBoardData_Clicked(object sender, EventArgs e)
@@ -159,9 +175,11 @@ namespace GamesTest
 				await DisplayPromptAsync("Success, Retrieved leaderboard specific data.", "OK");
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
         }
 
         private async void ButtonGetTopScores_Clicked(object sender, EventArgs e)
@@ -183,9 +201,11 @@ namespace GamesTest
 				}
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
         }
 
         private async void ButtonGetPlayerCenteredScores_Clicked(object sender, EventArgs e)
@@ -207,9 +227,11 @@ namespace GamesTest
 				}
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
         }
 
 		private async void ButtonSubmitScore_Clicked(object sender, EventArgs e)
@@ -235,9 +257,11 @@ namespace GamesTest
 				await DisplayAlertAsync("Score Submitted", $"Submitted score: {scoreValue}, Leaderboard ID: {result.LeaderboardId}", "OK");
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine(ex.Message);
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
 		}
 
 		private async void ButtonBackgroundAuthentication_Clicked(object sender, EventArgs e)
@@ -248,9 +272,11 @@ namespace GamesTest
 				Debug.WriteLine($"Background authentication authenticated: {authenticated}");
 			}
 			catch (Exception ex)
-			{
-				Debug.WriteLine($"Background authentication failed: {ex.Message}");
-			}
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
 		}
 	}
 }

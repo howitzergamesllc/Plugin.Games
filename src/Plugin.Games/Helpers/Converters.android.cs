@@ -13,14 +13,15 @@ namespace Plugin.Games
 
         internal static GamesAchievement ToGamesAchievement(this AchievementRef native)
         {
+            var type = native.Type.ToGamesAchievementType();
             return new GamesAchievement()
             {
                 AchievementId = native.AchievementId,
                 Android = new GamesAchievementAndroidExtras()
                 {
-                    CurrentSteps = native.CurrentSteps,
-                    Type = native.Type.ToGamesAchievementType(),
-                    TotalSteps = native.TotalSteps,
+                    CurrentSteps = type == GamesAchievementType.Incremental ? native.CurrentSteps : 0,
+                    Type = type,
+                    TotalSteps = type == GamesAchievementType.Incremental ? native.TotalSteps : 0,
                     RevealedImageUri = native.RevealedImageUri.ToUri(),
                     RevealedImageUrl = native.RevealedImageUrl,
                     UnlockedImageUri = native.UnlockedImageUri.ToUri(),
@@ -49,8 +50,8 @@ namespace Plugin.Games
         {
             return type switch
             {
-                1 => GamesAchievementType.Standard,
-                0 => GamesAchievementType.Incremental,
+                0 => GamesAchievementType.Standard,
+                1 => GamesAchievementType.Incremental,
                 _ => GamesAchievementType.Unknown,
             };
         }

@@ -12,7 +12,7 @@ dotnet add package Plugin.Games
 ## Package Reference
 ```xml
 <PropertyGroup>
-	<PackageReference Include="Plugin.Games" Version="10.0.40" />
+	<PackageReference Include="Plugin.Games" Version="10.0.50" />
 </PropertyGroup>
 ```
 
@@ -267,6 +267,10 @@ catch (Exception ex)
 
 
 ## Release notes
+- Version 10.0.50
+	- Fixed illegal state exception when using non-incremental achievement types.
+	- Cleaned up GamesTest.
+	- Updated supporting nugets.
 - Version 10.0.40
 	- Made calls thread safe.
 	- Fixed obsolete calls.
