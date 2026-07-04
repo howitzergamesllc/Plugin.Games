@@ -12,7 +12,7 @@ dotnet add package Plugin.Games
 ## Package Reference
 ```xml
 <PropertyGroup>
-	<PackageReference Include="Plugin.Games" Version="10.0.70" />
+	<PackageReference Include="Plugin.Games" Version="10.0.71" />
 </PropertyGroup>
 ```
 
@@ -268,6 +268,8 @@ catch (Exception ex)
 
 ## Release notes
 
+- Version 10.0.71
+	- Standard maui update.
 - Version 10.0.70
 	- Standard maui update.
 - Version 10.0.60
