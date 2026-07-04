@@ -129,7 +129,7 @@ namespace Plugin.Games
 
         /// <inheritdoc />
         public override Task RevealAchievementAsync(string achievementid) 
-            => SetAchievementProgressAsync(achievementid, 0);
+            => SetAchievementProgressAsync(achievementid, 1);
 
         /// <inheritdoc />
         public override async Task<bool> SetAchievementProgressAsync(string achievementId, int amount)

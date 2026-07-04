@@ -47,6 +47,11 @@ Build Test Release
 dotnet build "src\GamesTests\GamesMauiTest\GamesTest.csproj" -c release
 ```
 
+## Verify Trans Packages
+```cmd
+dotnet list "src" package --include-transitive
+```
+
 ## GitHub Publishing Commands
 - Navigate to the directory
 ```cmd
@@ -84,5 +89,5 @@ git push -u origin main
 
 ## Push package for private publishing.
 ```cmd
-dotnet nuget push "C:\Users\path\to\your\projects\Plugin.Games\b\Release\Plugin.Games.10.0.40.nupkg" --source "https://nuget.pkg.github.com/yourgithubusername/index.json" --api-key $env:GITHUBTOKEN
+dotnet nuget push "C:\Users\path\to\your\projects\Plugin.Games\b\Release\Plugin.Games.10.0.60.nupkg" --source "https://nuget.pkg.github.com/yourgithubusername/index.json" --api-key $env:GITHUBTOKEN
 ```

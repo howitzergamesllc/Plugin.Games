@@ -12,7 +12,7 @@ dotnet add package Plugin.Games
 ## Package Reference
 ```xml
 <PropertyGroup>
-	<PackageReference Include="Plugin.Games" Version="10.0.50" />
+	<PackageReference Include="Plugin.Games" Version="10.0.60" />
 </PropertyGroup>
 ```
 
@@ -267,6 +267,10 @@ catch (Exception ex)
 
 
 ## Release notes
+
+- Version 10.0.60
+	- Fixed reveal achievement abstraction for ios and maccatalyst by setting progress greater than 0.
+	- Standard maui update.
 - Version 10.0.50
 	- Fixed illegal state exception when using non-incremental achievement types.
 	- Cleaned up GamesTest.

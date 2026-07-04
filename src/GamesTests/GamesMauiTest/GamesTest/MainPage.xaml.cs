@@ -1,4 +1,8 @@
-﻿using Plugin.Games;
+﻿#if IOS || MACCATALYST
+using GameKit;
+#endif
+
+using Plugin.Games;
 using System.Diagnostics;
 
 namespace GamesTest
@@ -278,5 +282,19 @@ namespace GamesTest
                     Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
             }
 		}
-	}
+		private async void ResetAchievementProgress_Clicked(object sender, EventArgs e)
+        {
+#if IOS || MACCATALYST
+			try
+			{
+				await GKAchievement.ResetAchivementsAsync();
+				Debug.WriteLine($"Achievement progress reset success.");
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine($"Achievement progress reset failed: {ex.Message + ex.StackTrace}");
+			}
+#endif
+        }
+    }
 }

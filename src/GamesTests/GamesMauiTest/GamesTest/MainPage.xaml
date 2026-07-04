@@ -17,5 +17,6 @@
 		<Button Text="Get Player Centered Scores" x:Name="ButtonGetPlayerCenteredScores" Clicked="ButtonGetPlayerCenteredScores_Clicked"/>
 		<Button Text="Submit Score" x:Name="ButtonSubmitScore" Clicked="ButtonSubmitScore_Clicked"/>
 		<Button Text="Background Authentication" x:Name="ButtonBackgroundAuthentication" Clicked="ButtonBackgroundAuthentication_Clicked"/>
+        <Button Text="Reset Achievement Progress" x:Name="ResetAchievementProgress" IsVisible="{OnPlatform iOS=True, MacCatalyst=True, Android=False, WinUI=False}" Clicked="ResetAchievementProgress_Clicked"/>
     </VerticalStackLayout>
 </ContentPage>
