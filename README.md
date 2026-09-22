@@ -12,7 +12,7 @@ dotnet add package Plugin.Games
 ## Package Reference
 ```xml
 <PropertyGroup>
-	<PackageReference Include="Plugin.Games" Version="10.0.80" />
+	<PackageReference Include="Plugin.Games" Version="10.0.90" />
 </PropertyGroup>
 ```
 
@@ -268,6 +268,8 @@ catch (Exception ex)
 
 ## Release notes
 
+- Version 10.0.90
+	- Fixed a race condition in the apple implementation of SignInSilentlyAsync.
 - Version 10.0.80
 	- Standard maui update.
 - Version 10.0.71

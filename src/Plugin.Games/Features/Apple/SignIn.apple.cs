@@ -23,10 +23,20 @@ namespace Plugin.Games
             {
                 try
                 {
-                    if (signInTcs == null || signInTcs.Task.IsCompleted)
-                        signInTcs = new TaskCompletionSource<bool>();
-
                     var player = GKLocalPlayer.LocalPlayer;
+
+                    if (player.Authenticated)
+                    {
+                        ApplyAppleRestrictions(player);
+                        return Task.FromResult(true);
+                    }
+
+                    if (signInTcs is not null && !signInTcs.Task.IsCompleted)
+                    {
+                        return signInTcs.Task;
+                    }
+
+                    signInTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
                     AttachAuthenticationHandler(player);
 
@@ -42,14 +52,7 @@ namespace Plugin.Games
         private void AttachAuthenticationHandler(GKLocalPlayer player)
         {
             if (handlerAttached)
-            {
-                if (player.Authenticated)
-                {
-                    ApplyAppleRestrictions(player);
-                }
-                signInTcs?.TrySetResult(player.Authenticated);
                 return;
-            }
 
             handlerAttached = true;
 
