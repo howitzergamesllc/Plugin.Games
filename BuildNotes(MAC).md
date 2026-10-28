@@ -89,5 +89,5 @@ git push -u origin main
 
 ## Push package for private publishing.
 ```zsh
-dotnet nuget push "$HOME/path/to/your/projects/Plugin.Games/src/Plugin.Games/bin/release/Plugin.Games.10.0.101.nupkg" --source "https://nuget.pkg.github.com/yourgithubusername/index.json" --api-key $GITHUBTOKEN
+dotnet nuget push "$HOME/path/to/your/projects/Plugin.Games/src/Plugin.Games/bin/release/Plugin.Games.10.0.110.nupkg" --source "https://nuget.pkg.github.com/yourgithubusername/index.json" --api-key $GITHUBTOKEN
 ```

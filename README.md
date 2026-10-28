@@ -268,6 +268,10 @@ catch (Exception ex)
 
 ## Release notes
 
+- Version 10.0.110
+	- Added SceneDelegate.cs to samples for for XCode 27 release.
+	- Updated minimum MacCatalyst version to 17.0 for Xcode 27 release.
+	- Updated Microsoft.Maui.Controls to 10.0.110.
 - Version 10.0.101
 	- Standard maui update.
 - Version 10.0.100
