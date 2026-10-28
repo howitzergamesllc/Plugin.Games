@@ -268,6 +268,8 @@ catch (Exception ex)
 
 ## Release notes
 
+- Version 10.0.101
+	- Standard maui update.
 - Version 10.0.100
 	- Standard maui update.
 - Version 10.0.90
