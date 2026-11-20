@@ -12,7 +12,7 @@ dotnet add package Plugin.Games
 ## Package Reference
 ```xml
 <PropertyGroup>
-	<PackageReference Include="Plugin.Games" Version="10.0.100" />
+	<PackageReference Include="Plugin.Games" Version="10.0.120" />
 </PropertyGroup>
 ```
 
@@ -268,6 +268,8 @@ catch (Exception ex)
 
 ## Release notes
 
+- Version 10.0.120
+	- Standard maui update.
 - Version 10.0.110
 	- Added SceneDelegate.cs to samples for for XCode 27 release.
 	- Updated minimum MacCatalyst version to 17.0 for Xcode 27 release.
