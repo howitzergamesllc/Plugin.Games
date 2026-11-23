@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net11.0;net11.0-android;net11.0-ios;net11.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <SingleProject>true</SingleProject>
     <AssemblyName>Plugin.Games</AssemblyName>
     <RootNamespace>Plugin.Games</RootNamespace>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <AssemblyVersion>10.0.130.0</AssemblyVersion>
-    <AssemblyFileVersion>10.0.130.0</AssemblyFileVersion>
-    <Version>10.0.130.0</Version>
+    <AssemblyVersion>11.0.0.0</AssemblyVersion>
+    <AssemblyFileVersion>11.0.0.0</AssemblyFileVersion>
+    <Version>11.0.0.0</Version>
     <Authors>Ian Howard</Authors>
     <Copyright>© 2026, Ian Howard, Howizer Games, LLC</Copyright>
     <PackageProjectUrl>https://github.com/howitzergamesllc/Plugin.Games</PackageProjectUrl>
@@ -42,9 +42,9 @@
 
   <!-- platform version number information -->
   <PropertyGroup>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">16.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">17.0</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
@@ -66,13 +66,13 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.402" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.130" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="11.0.100" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0" />
   </ItemGroup>
   
   <ItemGroup Condition=" $(TargetFramework.Contains('-android')) ">
-    <PackageReference Include="Xamarin.GooglePlayServices.Games.V2" Version="121.0.0.1" />
-    <PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.130" />
+    <PackageReference Include="Xamarin.GooglePlayServices.Games.V2" Version="122.0.0" />
+    <PackageReference Include="Microsoft.Maui.Essentials" Version="11.0.0" />
   </ItemGroup>
 
 	<!-- iOS & MacCatalyst -->

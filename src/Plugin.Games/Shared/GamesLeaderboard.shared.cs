@@ -171,7 +171,7 @@ namespace Plugin.Games
     /// <summary>
     /// Gets timespan associated with the current leaderboard
     /// </summary>
-    public enum GamesLeaderBoardTimeSpan
+    public enum GamesLeaderboardTimeSpan
     {
         /// <summary>
         /// Scores are never reset.
@@ -323,7 +323,7 @@ namespace Plugin.Games
         /// <summary>
         /// Time span of this variant (Daily, Weekly, AllTime)
         /// </summary>
-        public GamesLeaderBoardTimeSpan TimeSpan { get; set; }
+        public GamesLeaderboardTimeSpan TimeSpan { get; set; }
 
         /// <summary>
         /// Collection type (Public or Friends)

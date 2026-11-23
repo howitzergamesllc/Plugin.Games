@@ -118,14 +118,14 @@ namespace Plugin.Games
         /// <summary>
         /// Results of the score submission for different time spans.
         /// </summary>
-        public IReadOnlyDictionary<GamesLeaderBoardTimeSpan, GamesScoreSubmissionResult> Results { get; init; }
+        public IReadOnlyDictionary<GamesLeaderboardTimeSpan, GamesScoreSubmissionResult> Results { get; init; }
 
         /// <summary>
         /// Retrieves the score submission result for the given time span, if available.
         /// </summary>
         /// <param name="timeSpan">Time span to retrieve result for.</param>
         /// <returns>Score result or null if no result exists.</returns>
-        public GamesScoreSubmissionResult GetScoreResult(GamesLeaderBoardTimeSpan timeSpan)
+        public GamesScoreSubmissionResult GetScoreResult(GamesLeaderboardTimeSpan timeSpan)
         {
             if (Results != null && Results.TryGetValue(timeSpan, out var result))
                 return result;

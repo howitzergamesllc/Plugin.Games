@@ -12,7 +12,7 @@ dotnet add package Plugin.Games
 ## Package Reference
 ```xml
 <PropertyGroup>
-	<PackageReference Include="Plugin.Games" Version="10.0.130" />
+	<PackageReference Include="Plugin.Games" Version="11.0.0" />
 </PropertyGroup>
 ```
 
@@ -94,34 +94,14 @@ public partial class App : Application
 
 Players who are authenticated already will just sign in silently in the background with maybe a toast appearing in the user interface. For players who haven't authenticated, a sign in user interface action will prompt the user to sign in.
 
+### Backend Server Access
 
-### Android Backend Server Access and Platform Specific Properties
-
-3. Setup the AndroidManifest.xml to accept your Google Play Games project id.
-```xml
-<manifest>
-  <application>
-    <meta-data android:name="com.google.android.gms.games.APP_ID"
-               android:value="@string/game_services_project_id"/>
-  </application>
-</manifest>
-```
-
-- Create a strings.xml resource file in the "./Platforms/Android/Resources/values" folder with the following
-```xml
-<?xml version="1.0" encoding="utf-8" ?>
-<resources>  
- 	<!-- Replace 0000000000 with your game’s project id. Example value shown above. -->	
-	<string name="game_services_project_id" translatable="false">1024987000491</string>
-</resources>
-```
-
-4. (Optional) To authenticate the user with your back end server, use "await CrossGames.Current.RequestServerSideAccessAsync" in the 
+3. (Optional) To authenticate the user with your back end server, use "await CrossGames.Current.RequestServerSideAccessAsync" in the 
 MainActivity in the Platforms/Android folder and overriding OnCreate(Budnle savedInstanceState).
 
 - On Andorid, get the server OAuth2.0 identifier from your google cloud project.
 ```C#
-string serverID = "28y9458jidfh2879";
+string serverID = "yourserverid";
 ```
 
 - Specify the scopes to which your server authentication applies
@@ -138,7 +118,7 @@ The method can be awaited for a GamesAuthResponse which contains the access toke
 ```C#        
 try
 {
-	GamesAuthResponse response = await CrossGames.Current.RequestServerSideAccessAsync(serverID, false, scopes);
+	GamesAuthResponse response = await CrossGames.Current.RequestServerSideAccessAsync(serverID, scopes);
 	if(response is null)
 	{
 		System.Diagnostics.Debug.WriteLine($"Server auth response is null.");
@@ -146,15 +126,38 @@ try
 	}
 	else
 	{
+#if ANDROID
 		string token = response.Android.AuthorizationCode;
 		//Pass the oauthToken to your backend server for verification and further processing.
 		System.Diagnostics.Debug.WriteLine($"Server authenticated. Access Token: {token}");
+#endif
 	}
 }
 catch (Exception ex)
 {
 	System.Diagnostics.Debug.WriteLine($"Authentication failed: {ex.Message}");
 }
+```
+
+### Android Platform Specific Properties
+
+4. Setup the AndroidManifest.xml to accept your Google Play Games project id.
+```xml
+<manifest>
+  <application>
+    <meta-data android:name="com.google.android.gms.games.APP_ID"
+               android:value="@string/game_services_project_id"/>
+  </application>
+</manifest>
+```
+
+- Create a strings.xml resource file in the "./Platforms/Android/Resources/values" folder with the following
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>  
+ 	<!-- Replace 0000000000 with your game’s project id. Example value shown above. -->	
+	<string name="game_services_project_id" translatable="false">1024987000491</string>
+</resources>
 ```
 
 5. (Optional) On Android, there is a data caching property you can override by setting. The default of the property is false
@@ -229,76 +232,14 @@ fires when a player should *NOT* have access to content.
 	}
 ```
 
-8. (Optional) To authenticate the user with your back end server, use "await CrossGames.Current.RequestServerSideAccessAsync" in the 
-AppDelegate for iOS and MacCatalyst by overriding FinishedLaunching(UIApplication application, NSDictionary? launchOptions).
-```C#
-try
-{
-	GamesAuthResponse response = await CrossGames.Current.RequestServerSideAccessAsync();
-	if(response is null)
-	{
-		System.Diagnostics.Debug.WriteLine($"User not signed in.");
-		return;
-	}
-	else
-	{
-		var publicURI = response.Apple.PublicKeyUrl;
-		var signature = Convert.ToBase64String(response.Apple.Signature);
-		//Use these values to verify the identity of the player on your backend server.
-		//You can also access the Salt and Timestamp from response.Apple.Salt and response.Apple.Timestamp
-		//To mitigate replay attacks, make sure the timestamp parameter is recent, and to avoid high network overhead, 
-		//respect the cache expiration headers.
-		System.Diagnostics.Debug.WriteLine($"User signed in. Public Key URL: {publicURI}, Signature: {signature}");
-	}
-}
-catch (Exception ex)
-{
-	System.Diagnostics.Debug.WriteLine($"Sign-in failed: {ex.Message}");
-}
-```
-
 
 ## Supporting Packages
 
 | Platform |            Package Name             |  Version  |       SDK Name      | Version |
 |----------|-------------------------------------|-----------|---------------------|---------|
-| Android  | Xamarin.GooglePlayServices.Games.V2 | 121.0.0.1 | Play Games Services |  21.0.0 |
-| iOS      |  Microsoft.Maui.Platform.GameKit    |           | Game Center         |         |
+| Android  | Xamarin.GooglePlayServices.Games.V2 |  122.0.0  | Play Games Services |  22.0.0 |
+| iOS      |  Microsoft.Maui.Platform.GameKit    |  net11.0  | Game Center         |  iOS 27 |
 
 
 ## Release notes
-
-- Version 10.0.130
-	- Standard maui update.
-- Version 10.0.120
-	- Standard maui update.
-- Version 10.0.110
-	- Added SceneDelegate.cs to samples for for XCode 27 release.
-	- Updated minimum MacCatalyst version to 17.0 for Xcode 27 release.
-	- Updated Microsoft.Maui.Controls to 10.0.110.
-- Version 10.0.101
-	- Standard maui update.
-- Version 10.0.100
-	- Standard maui update.
-- Version 10.0.90
-	- Fixed a race condition in the apple implementation of SignInSilentlyAsync.
-- Version 10.0.80
-	- Standard maui update.
-- Version 10.0.71
-	- Standard maui update.
-- Version 10.0.70
-	- Standard maui update.
-- Version 10.0.60
-	- Fixed reveal achievement abstraction for ios and maccatalyst by setting progress greater than 0.
-	- Standard maui update.
-- Version 10.0.50
-	- Fixed illegal state exception when using non-incremental achievement types.
-	- Cleaned up GamesTest.
-	- Updated supporting nugets.
-- Version 10.0.40
-	- Made calls thread safe.
-	- Fixed obsolete calls.
-- Version 10.0.30
-	- Release abstracting apple game center.
-- Version 10.0.20
-	- Initial release abstracting Play Games Services from android.
+To see whats changed, review recent [Releases](https://github.com/howitzergamesllc/Plugin.Games/releases).

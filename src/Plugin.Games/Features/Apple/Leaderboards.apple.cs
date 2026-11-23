@@ -5,6 +5,8 @@ using GameKit;
 using Foundation;
 using System.Linq;
 using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui;
+using UIKit;
 
 namespace Plugin.Games
 {
@@ -13,12 +15,18 @@ namespace Plugin.Games
     /// </summary>
     public partial class GamesImplementation : BaseGames
     {
+        private GKLeaderboard currentLeaderboard;
+        private NSRange currentRange;
+        private GKLeaderboardTimeScope currentTimeScope;
+        private GKLeaderboardPlayerScope currentPlayerScope;
+        private IReadOnlyList<GamesLeaderboardScore> currentScores;
+
         /// <inheritdoc />
-        public override Task ShowLeaderBoardsAsync()
+        public override async Task ShowLeaderBoardsAsync()
         {
             try
             {
-                return ShowAccessPoint();
+                await ShowAccessPoint();
             }
             catch (Exception ex)
             {
@@ -27,7 +35,8 @@ namespace Plugin.Games
         }
 
         /// <inheritdoc />
-        public override Task ShowLeaderBoardsAsync(string leaderBoardId)
+        public override Task ShowLeaderBoardsAsync(string identifier, GamesLeaderboardTimeSpan timeSpan = GamesLeaderboardTimeSpan.Unknown, 
+                GamesLeaderboardCollection collection = GamesLeaderboardCollection.Unknown)
         {
             if(!HasTriggerAccessPointWithInfo)
                 return Task.CompletedTask;
@@ -36,7 +45,7 @@ namespace Plugin.Games
             {
                 try
                 {
-                    GKAccessPoint.Shared.TriggerAccessPointWithLeaderboardSetId(leaderBoardId, () => {});
+                    GKAccessPoint.Shared.TriggerAccessPointWithLeaderboardSetId(identifier, () => {});
                 }
                 catch (Exception ex)
                 {
@@ -46,16 +55,50 @@ namespace Plugin.Games
         }
 
         /// <inheritdoc />
+        public override async Task<IReadOnlyList<GamesLeaderboard>> GetLeaderBoardDataAsync()
+        {
+            return await MainThread.InvokeOnMainThreadAsync(async() =>
+            {
+                try
+                {
+                    var leaderboards = new List<GamesLeaderboard>();
+                    var nativeLeaderBoardSets = await GKLeaderboardSet.LoadLeaderboardSetsAsync();
+                    foreach(var nativeSet in nativeLeaderBoardSets)
+                    {
+                        var leaderboardImage = await nativeSet.LoadImageAsync();
+                        var nativeLeaderBoards = await nativeSet.LoadLeaderboardsWithCompletionHandlerAsync();
+                        foreach(var nativeLeaderBoard in nativeLeaderBoards)
+                        {
+                            leaderboards.Add(nativeLeaderBoard.ToGamesLeaderboard(leaderboardImage));
+                        }
+                    }
+                    return leaderboards;
+                }
+                catch(Exception ex)
+                {
+                    throw new GamesException(GamesError.FailedToLoadLeaderboard, ex);
+                }
+            });
+        }
+
+        /// <inheritdoc />
         public override async Task<GamesLeaderboard> GetLeaderBoardDataAsync(string leaderBoardId) 
         {
-            var lb = await GetNativeLeaderBoardData(leaderBoardId);
+            try
+            {
+                var lb = await GetNativeLeaderBoardData(leaderBoardId);
 
-            if (lb == null)
-                return null;
+                if (lb == null)
+                    return null;
 
-            var image = await lb.LoadImageAsync();
+                var image = await lb.LoadImageAsync();
 
-            return lb.ToGamesLeaderboard(image);
+                return lb.ToGamesLeaderboard(image);
+            }
+            catch(Exception ex)
+            {
+                throw new GamesException(GamesError.FailedToLoadLeaderboard, ex);
+            }
         }
 
         private async Task<GKLeaderboard> GetNativeLeaderBoardData(string leaderBoardId) 
@@ -74,8 +117,42 @@ namespace Plugin.Games
         }
 
         /// <inheritdoc />
-        public override async Task<IReadOnlyList<GamesLeaderboardScore>> GetPlayerCenteredScoresAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults)
+        public override async Task<IReadOnlyList<GamesLeaderboardScore>> GetMoreScoresAsync(int maxResults, GamesPageDirection direction)
         {
+            if (maxResults < 1) throw new GamesException(GamesError.LeaderboardMaxResultsOutofBounds,
+                    "Max results must be positive");
+            maxResults = Math.Min(maxResults, 100);
+
+            var lb = currentLeaderboard ?? throw new GamesException(GamesError.LeaderboardScoresNotInitialized, 
+                $"Call {nameof(GetTopScoresAsync)} or {nameof(GetPlayerCenteredScoresAsync)} first.");
+            var range = currentRange.Length == 0 ? throw new GamesException(GamesError.LeaderboardScoresNotInitialized, 
+                $"Call {nameof(GetTopScoresAsync)} or {nameof(GetPlayerCenteredScoresAsync)} first.") : currentRange;
+
+            var nextRange = direction switch
+            {
+                GamesPageDirection.Next => new NSRange(range.Location + range.Length, maxResults),
+                GamesPageDirection.Prev => new NSRange(Math.Max(1, range.Location - maxResults), maxResults),
+                GamesPageDirection.None => new NSRange(range.Location, maxResults),
+                _ => range
+            };
+
+            try
+            {
+                currentScores = await BuildScoreDataAsync(lb, nextRange, currentTimeScope, currentPlayerScope);
+
+                return currentScores;
+            }
+            catch (Exception ex)
+            {
+                throw new GamesException(GamesError.FailedToLoadLeaderboardScore, ex);
+            }
+        }
+
+        /// <inheritdoc />
+        public override async Task<IReadOnlyList<GamesLeaderboardScore>> GetPlayerCenteredScoresAsync(string leaderBoardId, GamesLeaderboardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults)
+        {
+            ClearPaginationState();
+
             if (maxResults < 1 || maxResults > 100) throw new GamesException(GamesError.LeaderboardMaxResultsOutofBounds,
                     "Max results must be between 1 and 100.");
 
@@ -95,29 +172,14 @@ namespace Plugin.Games
                     return await GetTopScoresAsync(leaderBoardId, timeSpan, collection, maxResults);
 
                 int rank = (int)localPlayerEntry.LocalPlayerEntry.Rank;
-
-                int half = Math.Clamp((int)Math.Round((double)maxResults / 2D, MidpointRounding.AwayFromZero), 1, 50);
-                int startRank = Math.Max(1, rank - half);
-                int endRank = rank + half;
-                endRank = endRank - startRank + 1 > 100 ? startRank + 99 : endRank;
+                int startRank = Math.Max(1, rank - maxResults / 2);
+                var range = new NSRange(startRank, maxResults);
                 
-                var range = new NSRange(startRank, endRank - startRank + 1);
-                var entries = await lb.LoadEntriesAsync(collection.ToNativeCollection(),
-                    timeSpan.ToNativeTimeScope(),
-                    range);
+                currentPlayerScope = collection.ToNativeCollection();
+                currentTimeScope = timeSpan.ToNativeTimeScope();
+                currentScores = await BuildScoreDataAsync(lb, range, currentTimeScope, currentPlayerScope);
 
-                var nativeEntries = entries.Entries ?? Array.Empty<GKLeaderboardEntry>();
-                var scores = new List<GamesLeaderboardScore>();
-
-                foreach(var entry in nativeEntries)
-                {
-                    var large = await entry.Player.LoadPhotoAsync(GKPhotoSize.Normal).ConfigureAwait(false);
-                    var small = await entry.Player.LoadPhotoAsync(GKPhotoSize.Small).ConfigureAwait(false);
-
-                    scores.Add(entry.ToGamesLeaderboardScore(large,small));
-                }
-
-                return scores.AsReadOnly();
+                return currentScores;
             }
             catch (Exception ex)
             {
@@ -126,8 +188,10 @@ namespace Plugin.Games
         }
 
         /// <inheritdoc />
-        public override async Task<IReadOnlyList<GamesLeaderboardScore>> GetTopScoresAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults)
+        public override async Task<IReadOnlyList<GamesLeaderboardScore>> GetTopScoresAsync(string leaderBoardId, GamesLeaderboardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults)
         {
+            ClearPaginationState();
+
             if (maxResults < 1 || maxResults > 100) throw new GamesException(GamesError.LeaderboardMaxResultsOutofBounds,
                     "Max results must be between 1 and 100.");
 
@@ -139,9 +203,32 @@ namespace Plugin.Games
             try
             {
                 var range = new NSRange(1, maxResults);
-                var entries = await lb.LoadEntriesAsync(collection.ToNativeCollection(),
-                    timeSpan.ToNativeTimeScope(),
-                    range);
+                currentPlayerScope = collection.ToNativeCollection();
+                currentTimeScope = timeSpan.ToNativeTimeScope();
+                currentScores = await BuildScoreDataAsync(lb, range, currentTimeScope, currentPlayerScope);
+                
+                return currentScores;
+            }
+            catch (Exception ex)
+            {
+                throw new GamesException(GamesError.FailedToLoadLeaderboardScore, ex);
+            }
+        }
+
+        private void ClearPaginationState()
+        {
+            currentLeaderboard = null;
+            currentRange = new NSRange(0,0);
+            currentTimeScope = default;
+            currentPlayerScope = default;
+            currentScores = null;
+        }
+
+        private async Task<List<GamesLeaderboardScore>> BuildScoreDataAsync(GKLeaderboard lb, NSRange range, GKLeaderboardTimeScope timeScope, GKLeaderboardPlayerScope playerScope)
+        {
+            try
+            {
+                var entries = await lb.LoadEntriesAsync(playerScope, timeScope, range);
 
                 var nativeEntries = entries.Entries ?? Array.Empty<GKLeaderboardEntry>();
                 var scores = new List<GamesLeaderboardScore>();
@@ -153,7 +240,10 @@ namespace Plugin.Games
 
                     scores.Add(entry.ToGamesLeaderboardScore(large,small));
                 }
-                
+
+                currentLeaderboard = lb;
+                currentRange = range;
+
                 return scores.ToList();
             }
             catch (Exception ex)
@@ -191,28 +281,28 @@ namespace Plugin.Games
 
                 var weekly = await updatedlb.LoadEntriesAsync(
                     new[] { await Extensions.LocalPlayerAsync() },
-                    GamesLeaderBoardTimeSpan.Weekly.ToNativeTimeScope()
+                    GamesLeaderboardTimeSpan.Weekly.ToNativeTimeScope()
                 );
                 var daily = await updatedlb.LoadEntriesAsync(
                     new[] { await Extensions.LocalPlayerAsync() },
-                    GamesLeaderBoardTimeSpan.Daily.ToNativeTimeScope()
+                    GamesLeaderboardTimeSpan.Daily.ToNativeTimeScope()
                 );
                 var alltime = await updatedlb.LoadEntriesAsync(
                     new[] { await Extensions.LocalPlayerAsync() },
-                    GamesLeaderBoardTimeSpan.AllTime.ToNativeTimeScope()
+                    GamesLeaderboardTimeSpan.AllTime.ToNativeTimeScope()
                 );
 
-                var imageLarge = await alltime.LocalPlayerEntry.Player.LoadPhotoAsync(GKPhotoSize.Normal).ConfigureAwait(false);
-                var imageSmall = await alltime.LocalPlayerEntry.Player.LoadPhotoAsync(GKPhotoSize.Small).ConfigureAwait(false);
+                UIImage imageLarge = await GKLocalPlayer.LocalPlayer.LoadPhotoAsync(GKPhotoSize.Normal);
+                UIImage imageSmall = await GKLocalPlayer.LocalPlayer.LoadPhotoAsync(GKPhotoSize.Small);
                             
-                var results = new Dictionary<GamesLeaderBoardTimeSpan, GamesScoreSubmissionResult>();
+                var results = new Dictionary<GamesLeaderboardTimeSpan, GamesScoreSubmissionResult>();
 
                 if (alltime is not null)
-                    results.Add(GamesLeaderBoardTimeSpan.AllTime, alltime.ToGamesScoreSubmissionResult(imageLarge, imageSmall));
+                    results.Add(GamesLeaderboardTimeSpan.AllTime, alltime.ToGamesScoreSubmissionResult(imageLarge, imageSmall));
                 if (daily is not null)
-                    results.Add(GamesLeaderBoardTimeSpan.Daily, daily.ToGamesScoreSubmissionResult(imageLarge, imageSmall));
+                    results.Add(GamesLeaderboardTimeSpan.Daily, daily.ToGamesScoreSubmissionResult(imageLarge, imageSmall));
                 if (weekly is not null)
-                    results.Add(GamesLeaderBoardTimeSpan.Weekly, weekly.ToGamesScoreSubmissionResult(imageLarge, imageSmall));
+                    results.Add(GamesLeaderboardTimeSpan.Weekly, weekly.ToGamesScoreSubmissionResult(imageLarge, imageSmall));
 
                 var submission = new GamesScoreSubmission
                 {
@@ -227,6 +317,22 @@ namespace Plugin.Games
             {
                 throw new GamesException(GamesError.FailedToSubmitScore, ex);
             }
+        }        
+        
+        private IReadOnlyList<GamesLeaderboardScore> BuildEmptyGamesLeaderBoardScoreList()
+        {
+            var empty = new List<GamesLeaderboardScore>();
+            empty.Add(BuildEmptyGamesLeaderBoardScore());
+            return empty.AsReadOnly();
+        }
+
+        private GamesLeaderboardScore BuildEmptyGamesLeaderBoardScore()
+        {
+            var metadata = new GamesScoreMetadata()
+            {
+                GoogleScoreTag = "Hidden"
+            };
+            return new GamesLeaderboardScore() { DisplayRank = "Hidden", DisplayScore = "Hidden", DisplayName = "Hidden", Rank = -1L, RawScore = -1L, Metadata = metadata };
         }
     }
 }

@@ -122,13 +122,13 @@ namespace Plugin.Games
             };
         }
 
-        internal static int ToNativeTimeSpan(this GamesLeaderBoardTimeSpan timespan)
+        internal static int ToNativeTimeSpan(this GamesLeaderboardTimeSpan timespan)
         {
             return timespan switch
             {
-                GamesLeaderBoardTimeSpan.AllTime => 2,
-                GamesLeaderBoardTimeSpan.Daily => 0,
-                GamesLeaderBoardTimeSpan.Weekly => 1,
+                GamesLeaderboardTimeSpan.AllTime => 2,
+                GamesLeaderboardTimeSpan.Daily => 0,
+                GamesLeaderboardTimeSpan.Weekly => 1,
                 _ => throw new GamesException(GamesError.InvalideGamesLeaderboardTimeSpan)
             };
         }
@@ -153,20 +153,20 @@ namespace Plugin.Games
             };
         }
 
-        internal static IReadOnlyDictionary<GamesLeaderBoardTimeSpan, GamesScoreSubmissionResult> ToGamesScoreSubmissionResults(this ScoreSubmissionData native)
+        internal static IReadOnlyDictionary<GamesLeaderboardTimeSpan, GamesScoreSubmissionResult> ToGamesScoreSubmissionResults(this ScoreSubmissionData native)
         {
-            var alltime = native.GetScoreResult((int)GamesLeaderBoardTimeSpan.AllTime)?.ToGamesScoreSubmissionResult();
-            var daily = native.GetScoreResult((int)GamesLeaderBoardTimeSpan.Daily)?.ToGamesScoreSubmissionResult();
-            var weekly = native.GetScoreResult((int)GamesLeaderBoardTimeSpan.Weekly)?.ToGamesScoreSubmissionResult();
+            var alltime = native.GetScoreResult((int)GamesLeaderboardTimeSpan.AllTime)?.ToGamesScoreSubmissionResult();
+            var daily = native.GetScoreResult((int)GamesLeaderboardTimeSpan.Daily)?.ToGamesScoreSubmissionResult();
+            var weekly = native.GetScoreResult((int)GamesLeaderboardTimeSpan.Weekly)?.ToGamesScoreSubmissionResult();
 
-            var results = new Dictionary<GamesLeaderBoardTimeSpan, GamesScoreSubmissionResult>();
+            var results = new Dictionary<GamesLeaderboardTimeSpan, GamesScoreSubmissionResult>();
 
             if (alltime is not null)
-                results.Add(GamesLeaderBoardTimeSpan.AllTime, alltime);
+                results.Add(GamesLeaderboardTimeSpan.AllTime, alltime);
             if (daily is not null)
-                results.Add(GamesLeaderBoardTimeSpan.Daily, daily);
+                results.Add(GamesLeaderboardTimeSpan.Daily, daily);
             if (weekly is not null)
-                results.Add(GamesLeaderBoardTimeSpan.Weekly, weekly);
+                results.Add(GamesLeaderboardTimeSpan.Weekly, weekly);
 
             return results.AsReadOnly();
         }

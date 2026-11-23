@@ -5,6 +5,7 @@ using System.Linq;
 using UIKit;
 using GameKit;
 using Microsoft.Maui.ApplicationModel;
+using System.Collections.Generic;
 
 namespace Plugin.Games
 {
@@ -106,7 +107,7 @@ namespace Plugin.Games
         }
 
         /// <inheritdoc />
-        public override Task<GamesAuthResponse> RequestServerSideAccessAsync()
+        public override Task<GamesAuthResponse> RequestServerSideAccessAsync(string serverClientId, List<GamesAuthScope> authScopes)
         {
             var tcs = new TaskCompletionSource<GamesAuthResponse>();
 

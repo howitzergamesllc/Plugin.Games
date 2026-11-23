@@ -15,36 +15,6 @@ public class MainActivity : MauiAppCompatActivity
         base.OnCreate(savedInstanceState);
 
         CrossGames.Initialize(this);
-        //_ = RequestGamesServerAccessAsync(); Optional
-    }
-
-    private async Task RequestGamesServerAccessAsync()
-    {        
-        string serverID = "28y9458jidfh2879";
-        List<GamesAuthScope> scopes = new List<GamesAuthScope>
-        {
-            GamesAuthScope.Profile,
-            GamesAuthScope.Email
-        };
-        try
-        {
-            GamesAuthResponse response = await CrossGames.Current.RequestServerSideAccessAsync(serverID, scopes);
-            if(response is null)
-            {
-                System.Diagnostics.Debug.WriteLine($"Server auth response is null.");
-                return;
-            }
-            else
-            {
-                string token = response.Android.AuthorizationCode;
-                //Pass the oauthToken to your backend server for verification and further processing.
-		        System.Diagnostics.Debug.WriteLine($"Server authenticated. Access Token: {token}");
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Authentication failed: {ex.Message}");
-        }
     }
 
     protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)

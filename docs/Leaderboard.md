@@ -7,17 +7,6 @@ ShowLeaderBoardsAsync, GetLeaderBoardDataAsync, and SubmitScore have been abstra
 
 On Android, the maximum results represents the number of results that should be returned and cannot be negative or greater than 25. An ArgumentOutOfRangeException will be thrown for Android if the value is negative. Any input greater than 25 will just be clamped to 25. 
 
-- Call a player specific leaderboard by passing in the leaderboardId and a GamesLeaderBoardTimeSpan.
-```C#
-GamesLeaderboard leaderboard = await ShowLeaderBoardsAsync(leaderBoardId, timeSpan);
-```
-
-- After calling "GetTopScores" or "GetPlayerCenteredScores", Google supports a concept called pagination. Use "GetMoreScores"
-passing in a maxResults
-```C#
-List<GamesLeaderboardScore> scores = await GetMoreScoresAsync(int maxResults, GamesPageDirection direction);
-```
-
 - FriendsResolutionRequiredException
 When calling the Android specific player leaderboard ShowLeaderBoardsAsync(leaderBoardId, timespan), when calling "GetTopScores", when calling "GetPlayerCenteredScores", or when calling the Android specific "GetMoreScores", a FriendsResolutionRequiredException can be thrown if the players are not friends with the calling player. When the exception is thrown, a request will automatically prompt a friend request through Googles user interface. The pending response can be handled in the MainActivit by overriding on ActivityResult and checking if it matches the GamesImplementation.FriendRequestCode. If successful, you can automatically request the information previously requested here.
 ```C#
@@ -51,10 +40,9 @@ With Apple, the maxResults represents the range of Ranks from the players rank t
 await CrossGames.Current.ShowLeaderBoardsAsync();
 ```
 
-- A specific leaderboard can be displayed from Google Play Games and Apple Game Center user interfaces by awaiting "ShowLeaderBoardsAsync" and providing the leaderboardId. On Google, this is the specific identifier for the leaderboard. With Apple,
-this is the identifier associated with a leaderboard set.
+- A specific leaderboard can be displayed from Google Play Games and Apple Game Center user interfaces by awaiting "ShowLeaderBoardsAsync" and providing the identifier. On Google, this is the specific identifier for the leaderboard. With Apple, this is the identifier associated with a leaderboard set.
 ```C#
-await CrossGames.Current.ShowLeaderBoardsAsync(leaderBoardId);
+GamesLeaderboard leaderboard = await ShowLeaderBoardsAsync(identifier, timeSpan, collection);
 ```
 
 - To get all leaderboard data, you can await "GetLeaderBoardData"

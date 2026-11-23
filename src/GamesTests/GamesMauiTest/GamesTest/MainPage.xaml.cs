@@ -14,7 +14,7 @@ namespace GamesTest
 			InitializeComponent();
         }
 
-        private async void ButtonOpenAchievements_Clicked(object sender, EventArgs e)
+        private async void ButtonOpenAchievements_Clicked(object? sender, EventArgs e)
 		{
 			try
 			{
@@ -28,7 +28,7 @@ namespace GamesTest
             }
 		}
 
-        private async void ButtonOpenLeaderBoards_Clicked(object sender, EventArgs e)
+        private async void ButtonOpenLeaderBoards_Clicked(object? sender, EventArgs e)
 		{				
 			try
 			{
@@ -42,11 +42,16 @@ namespace GamesTest
             }
 		}
 
-        private async void ButtonOpenLeaderBoard_Clicked(object sender, EventArgs e)
+        private async void ButtonOpenLeaderBoard_Clicked(object? sender, EventArgs e)
 		{
 			try
 			{
-				await CrossGames.Current.ShowLeaderBoardsAsync("leaderboardTest1");
+#if IOS || MACCATALYST
+				string identifier = "leaderboardSetIdentifier";
+#else
+				string identifier = "leaderboardIdentifier";
+#endif
+				await CrossGames.Current.ShowLeaderBoardsAsync(identifier, GamesLeaderboardTimeSpan.AllTime, GamesLeaderboardCollection.Public);
 			}
 			catch (Exception ex)
             {
@@ -56,7 +61,7 @@ namespace GamesTest
             }
 		}
 
-		private async void ButtonIncrementAchievement_Clicked(object sender, EventArgs e)
+		private async void ButtonIncrementAchievement_Clicked(object? sender, EventArgs e)
 		{
 			string achievementId = "";
 			#if ANDROID
@@ -77,7 +82,7 @@ namespace GamesTest
             }
 		}
 
-		private async void ButtonSetAchievement_Clicked(object sender, EventArgs e)
+		private async void ButtonSetAchievement_Clicked(object? sender, EventArgs e)
 		{
 			string achievementId = "";
 #if ANDROID
@@ -99,7 +104,7 @@ namespace GamesTest
             }
 		}
 
-		private async void ButtonGetAchievements_Clicked(object sender, EventArgs e)
+		private async void ButtonGetAchievements_Clicked(object? sender, EventArgs e)
 		{
 			try
 			{
@@ -125,7 +130,7 @@ namespace GamesTest
             }
 		}
 
-        private async void ButtonRevealAchievement_Clicked(object sender, EventArgs e)
+        private async void ButtonRevealAchievement_Clicked(object? sender, EventArgs e)
         {			
 			try
 			{
@@ -145,7 +150,7 @@ namespace GamesTest
             }
         }
 
-        private async void ButtonUnlockAchievement_Clicked(object sender, EventArgs e)
+        private async void ButtonUnlockAchievement_Clicked(object? sender, EventArgs e)
         {
 			try
 			{
@@ -165,7 +170,7 @@ namespace GamesTest
             }
         }
 
-        private async void ButtonGetSpecificLeaderBoardData_Clicked(object sender, EventArgs e)
+        private async void ButtonGetSpecificLeaderBoardData_Clicked(object? sender, EventArgs e)
 		{
 			try
 			{
@@ -186,11 +191,37 @@ namespace GamesTest
             }
         }
 
-        private async void ButtonGetTopScores_Clicked(object sender, EventArgs e)
+		private async void ButtonGetMoreScores_Clicked(object? sender, EventArgs e)
 		{
  			try
 			{
-				var scores = await CrossGames.Current.GetTopScoresAsync("leaderboardTest1", GamesLeaderBoardTimeSpan.AllTime, GamesLeaderboardCollection.Public, App.IsAndroid ? 10 : 50);
+				var scores = await CrossGames.Current.GetMoreScoresAsync(App.IsAndroid ? 10 : 50, GamesPageDirection.Next);
+				if (scores == null || scores.Count() == 0)
+				{
+					Debug.WriteLine("No top scores returned.");
+				}
+				else
+				{
+					foreach (var score in scores)
+					{
+						Debug.WriteLine($"Score: {score.DisplayScore}, Name: {score.DisplayName}, Rank: {score.Rank}");
+					}
+					await DisplayAlertAsync("More Scores", $"Retrieved {scores.Count()} top scores.", "OK");
+				}
+			}
+			catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                if (ex.InnerException is Exception inner)
+                    Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
+            }
+        }
+
+        private async void ButtonGetTopScores_Clicked(object? sender, EventArgs e)
+		{
+ 			try
+			{
+				var scores = await CrossGames.Current.GetTopScoresAsync("leaderboardTest1", GamesLeaderboardTimeSpan.AllTime, GamesLeaderboardCollection.Public, App.IsAndroid ? 10 : 50);
 				if (scores == null || scores.Count() == 0)
 				{
 					Debug.WriteLine("No top scores returned.");
@@ -212,11 +243,11 @@ namespace GamesTest
             }
         }
 
-        private async void ButtonGetPlayerCenteredScores_Clicked(object sender, EventArgs e)
+        private async void ButtonGetPlayerCenteredScores_Clicked(object? sender, EventArgs e)
 		{
 			try
 			{
-				var scores = await CrossGames.Current.GetPlayerCenteredScoresAsync("leaderboardTest1", GamesLeaderBoardTimeSpan.AllTime, GamesLeaderboardCollection.Public, App.IsAndroid ? 10 : 50);
+				var scores = await CrossGames.Current.GetPlayerCenteredScoresAsync("leaderboardTest1", GamesLeaderboardTimeSpan.AllTime, GamesLeaderboardCollection.Public, App.IsAndroid ? 10 : 50);
 				if (scores == null || scores.Count() == 0)
 				{
 					Debug.WriteLine("No player-centered scores returned.");
@@ -238,7 +269,7 @@ namespace GamesTest
             }
         }
 
-		private async void ButtonSubmitScore_Clicked(object sender, EventArgs e)
+		private async void ButtonSubmitScore_Clicked(object? sender, EventArgs e)
 		{
 			var scoreValue = App.IsAndroid ? 12345L : 67890L;
 			var metaData = new GamesScoreMetadata
@@ -268,7 +299,7 @@ namespace GamesTest
             }
 		}
 
-		private async void ButtonBackgroundAuthentication_Clicked(object sender, EventArgs e)
+		private async void ButtonBackgroundAuthentication_Clicked(object? sender, EventArgs e)
 		{
 			try
 			{
@@ -282,7 +313,7 @@ namespace GamesTest
                     Debug.WriteLine(inner.Message + Environment.NewLine + inner.StackTrace);
             }
 		}
-		private async void ResetAchievementProgress_Clicked(object sender, EventArgs e)
+		private async void ResetAchievementProgress_Clicked(object? sender, EventArgs e)
         {
 #if IOS || MACCATALYST
 			try

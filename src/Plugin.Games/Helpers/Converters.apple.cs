@@ -115,10 +115,8 @@ namespace Plugin.Games
         {
             return new GamesLeaderboard()
             {
-                LeaderboardId = native.Identifier,
+                LeaderboardId = native.BaseLeaderboardId,
                 DisplayName = native.Title,
-                TimeSpan = native.TimeScope.ToGamesLeaderBoardTimeSpan(),
-                Collection = native.PlayerScope.ToGamesLeaderBoardCollection(),
                 Apple = new GamesLeaderboardAppleExtras()
                 {
                     IconImageBytes = imageIcon.ToByteArray(),
@@ -127,7 +125,7 @@ namespace Plugin.Games
             };
         }
 
-        private static GamesLeaderboardType ToGamesLeaderboardType(this GKLeaderboardType type)
+        internal static GamesLeaderboardType ToGamesLeaderboardType(this GKLeaderboardType type)
         {
             return type switch
             {
@@ -137,18 +135,18 @@ namespace Plugin.Games
             };
         }
 
-        private static GamesLeaderBoardTimeSpan ToGamesLeaderBoardTimeSpan(this GKLeaderboardTimeScope native)
+        internal static GamesLeaderboardTimeSpan ToGamesLeaderboardTimeSpan(this GKLeaderboardTimeScope native)
         {
             return native switch
             {
-                GKLeaderboardTimeScope.AllTime => GamesLeaderBoardTimeSpan.AllTime,
-                GKLeaderboardTimeScope.Today => GamesLeaderBoardTimeSpan.Daily,
-                GKLeaderboardTimeScope.Week => GamesLeaderBoardTimeSpan.Weekly,
-                _ => GamesLeaderBoardTimeSpan.Unknown
+                GKLeaderboardTimeScope.AllTime => GamesLeaderboardTimeSpan.AllTime,
+                GKLeaderboardTimeScope.Today => GamesLeaderboardTimeSpan.Daily,
+                GKLeaderboardTimeScope.Week => GamesLeaderboardTimeSpan.Weekly,
+                _ => GamesLeaderboardTimeSpan.Unknown
             };
         }
 
-        private static GamesLeaderboardCollection ToGamesLeaderBoardCollection(this GKLeaderboardPlayerScope native)
+        internal static GamesLeaderboardCollection ToGamesLeaderBoardCollection(this GKLeaderboardPlayerScope native)
         {
             return native switch
             {
@@ -158,13 +156,13 @@ namespace Plugin.Games
             };
         }
 
-        internal static GKLeaderboardTimeScope ToNativeTimeScope(this GamesLeaderBoardTimeSpan timespan)
+        internal static GKLeaderboardTimeScope ToNativeTimeScope(this GamesLeaderboardTimeSpan timespan)
         {
             return timespan switch
             {
-                GamesLeaderBoardTimeSpan.AllTime => GKLeaderboardTimeScope.AllTime,
-                GamesLeaderBoardTimeSpan.Daily => GKLeaderboardTimeScope.Today,
-                GamesLeaderBoardTimeSpan.Weekly => GKLeaderboardTimeScope.Week,
+                GamesLeaderboardTimeSpan.AllTime => GKLeaderboardTimeScope.AllTime,
+                GamesLeaderboardTimeSpan.Daily => GKLeaderboardTimeScope.Today,
+                GamesLeaderboardTimeSpan.Weekly => GKLeaderboardTimeScope.Week,
                 _ => throw new GamesException(GamesError.InvalideGamesLeaderboardTimeSpan)
             };
         }

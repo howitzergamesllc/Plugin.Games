@@ -90,45 +90,20 @@ namespace Plugin.Games
         public abstract Task ShowLeaderBoardsAsync();
 
         /// <summary>
-        /// Asynchronously shows a leaderboard for a game specified by a leaderboardId.
+        /// Asynchronously shows a leaderboard (Android) or leaderboard set (Apple) for a game specified by a leaderboardId (Android) or by a leaderboardSetId (Apple).
         /// </summary>
-        /// <param name="leaderBoardId">
-        /// The identifier used by the underlying platform to present leaderboard UI.
-        /// On Android, this is the leaderboard ID.
-        /// On Apple platforms, this must be a leaderboard <b>set</b> identifier,
-        /// as Game Center does not support directly presenting individual leaderboards.
-        /// </param>
-        /// <remarks>
-        /// On Apple platforms, the system UI determines available time spans and
-        /// player scopes (such as friends or global). These options cannot be
-        /// preselected by the application.
-        /// </remarks>
-        /// <returns>A Task that completes when the leaderboard is displayed.</returns>
-        public abstract Task ShowLeaderBoardsAsync(string leaderBoardId);
-#if ANDROID
-        /// <summary>
-        /// Asynchronously shows a leaderboard for a game specified by a leaderboardId, time span, and collection.
-        /// </summary>
-        /// <param name="leaderBoardId">The ID of the leaderboard to view.</param>
-        /// <param name="timeSpan"> to retrieve data for. Valid values are <see cref="GamesLeaderBoardTimeSpan.Daily"/>, <see cref="GamesLeaderBoardTimeSpan.AllTime"/>, and <see cref="GamesLeaderBoardTimeSpan.Weekly"/>.</param>
-        /// <param name="collection"> to retrieve data for. Valid values are <see cref="GamesLeaderboardCollection.Friends"/> and <see cref="GamesLeaderboardCollection.Public"/>.</param>
-        /// <returns>A Task that completes when the leaderboard is displayed.</returns>
-        public abstract Task ShowLeaderBoardsAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan, GamesLeaderboardCollection collection);
-
-        /// <summary>
-        /// Asynchronously shows a leaderboard for a game specified by a leaderboardId and time span.
-        /// </summary>
-        /// <param name="leaderBoardId">The ID of the leaderboard to view.</param>
-        /// <param name="timeSpan"> to retrieve data for. Valid values are <see cref="GamesLeaderBoardTimeSpan.Daily"/>, <see cref="GamesLeaderBoardTimeSpan.AllTime"/>, and <see cref="GamesLeaderBoardTimeSpan.Weekly"/></param>
-        /// <returns>A Task that completes when the leaderboard is displayed.</returns>
-        public abstract Task ShowLeaderBoardsAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan);
+        /// <param name="identifier"><para>(Android) The ID of the leaderboard to view.</para><para>(Apple) The leaderboard set ID to view.</para></param>
+        /// <param name="timeSpan">(Android Only) The <see cref="GamesLeaderboardTimeSpan"/> to retrieve data for. Defaults to <see cref="GamesLeaderboardTimeSpan.Unknown"/>.</param>
+        /// <param name="collection">(Android Only) The <see cref="GamesLeaderboardCollection"/> to retrieve data for. Defaults to <see cref="GamesLeaderboardCollection.Unknown"/>.</param>
+        /// <returns>A Task that completes when the leaderboard or set is displayed.</returns>
+        public abstract Task ShowLeaderBoardsAsync(string identifier, GamesLeaderboardTimeSpan timeSpan = GamesLeaderboardTimeSpan.Unknown, 
+                GamesLeaderboardCollection collection = GamesLeaderboardCollection.Unknown);
 
         /// <summary>
         /// Asynchronously gets a list of leaderboard metadata.
         /// </summary>
         /// <returns>A Task that returns a <see cref="IReadOnlyList{T}"/> of <see cref="GamesLeaderboard"/></returns>
         public abstract Task<IReadOnlyList<GamesLeaderboard>> GetLeaderBoardDataAsync();
-#endif
 
         /// <summary>
         /// Asynchronously gets a single leaderboard metadata.
@@ -136,7 +111,7 @@ namespace Plugin.Games
         /// <param name="leaderBoardId">ID of the leaderboard to load metadata for.</param>
         /// <returns>A Task that returns a <see cref="GamesLeaderboard"/></returns>
         public abstract Task<GamesLeaderboard> GetLeaderBoardDataAsync(string leaderBoardId);
-#if ANDROID
+        
         /// <summary>
         /// Asynchronously loads <see cref="GamesLeaderboardScore"/>'s that represents an additional page of score data.
         /// </summary>
@@ -149,16 +124,16 @@ namespace Plugin.Games
         /// </param>
         /// <returns>A Task that returns a <see cref="IReadOnlyList{T}"/> of <see cref="GamesLeaderboardScore"/></returns>
         public abstract Task<IReadOnlyList<GamesLeaderboardScore>> GetMoreScoresAsync(int maxResults, GamesPageDirection direction);
-#endif
+        
         /// <summary>
         /// Asynchronously loads the <see cref="GamesLeaderboardScore"/>'s that represents the player-centered page of scores 
         /// for the leaderboard specified by leaderboardId. If the player does not have a score on this leaderboard, this call will 
         /// return the top page instead.
         /// </summary>
         /// <param name="leaderBoardId">The ID of the leaderboard to view.</param>
-        /// <param name="timeSpan"> to retrieve data for. Valid values are <see cref="GamesLeaderBoardTimeSpan.Daily"/>, 
-        /// <see cref="GamesLeaderBoardTimeSpan.AllTime"/>, and <see cref="GamesLeaderBoardTimeSpan.Weekly"/>. On Apple, this parameter is 
-        /// applicable to nonrecurring leaderboards only. For recurring leaderboards, pass <see cref="GamesLeaderBoardTimeSpan.AllTime"/> 
+        /// <param name="timeSpan"> to retrieve data for. Valid values are <see cref="GamesLeaderboardTimeSpan.Daily"/>, 
+        /// <see cref="GamesLeaderboardTimeSpan.AllTime"/>, and <see cref="GamesLeaderboardTimeSpan.Weekly"/>. On Apple, this parameter is 
+        /// applicable to nonrecurring leaderboards only. For recurring leaderboards, pass <see cref="GamesLeaderboardTimeSpan.AllTime"/> 
         /// for this parameter.</param>
         /// <param name="collection"> to retrieve data for. Valid values are <see cref="GamesLeaderboardCollection.Friends"/> and <see cref="GamesLeaderboardCollection.Public"/>.</param>
         /// <param name="maxResults">
@@ -168,15 +143,15 @@ namespace Plugin.Games
         /// rank and maximum rank must not exceed 100.
         /// </param>
         /// <returns>A Task that returns a <see cref="IReadOnlyList{T}"/> of <see cref="GamesLeaderboardScore"/></returns>
-        public abstract Task<IReadOnlyList<GamesLeaderboardScore>> GetPlayerCenteredScoresAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults);
+        public abstract Task<IReadOnlyList<GamesLeaderboardScore>> GetPlayerCenteredScoresAsync(string leaderBoardId, GamesLeaderboardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults);
 
         /// <summary>
         /// Asynchronously loads the <see cref="GamesLeaderboardScore"/>'s that represents the top page of scores for the leaderboard specified by leaderboardId.
         /// </summary>
         /// <param name="leaderBoardId">The ID of the leaderboard to view.</param>
-        /// <param name="timeSpan"> to retrieve data for. Valid values are <see cref="GamesLeaderBoardTimeSpan.Daily"/>, 
-        /// <see cref="GamesLeaderBoardTimeSpan.AllTime"/>, and <see cref="GamesLeaderBoardTimeSpan.Weekly"/>. On Apple, this parameter is 
-        /// applicable to nonrecurring leaderboards only. For recurring leaderboards, pass <see cref="GamesLeaderBoardTimeSpan.AllTime"/> 
+        /// <param name="timeSpan"> to retrieve data for. Valid values are <see cref="GamesLeaderboardTimeSpan.Daily"/>, 
+        /// <see cref="GamesLeaderboardTimeSpan.AllTime"/>, and <see cref="GamesLeaderboardTimeSpan.Weekly"/>. On Apple, this parameter is 
+        /// applicable to nonrecurring leaderboards only. For recurring leaderboards, pass <see cref="GamesLeaderboardTimeSpan.AllTime"/> 
         /// for this parameter.</param>
         /// <param name="collection"> to retrieve data for. Valid values are <see cref="GamesLeaderboardCollection.Friends"/> and <see cref="GamesLeaderboardCollection.Public"/>.</param>
         /// <param name="maxResults">
@@ -186,7 +161,7 @@ namespace Plugin.Games
         /// rank and maximum rank must not exceed 100.
         /// </param>
         /// <returns>A Task that returns a <see cref="IReadOnlyList{T}"/> of <see cref="GamesLeaderboardScore"/></returns>
-        public abstract Task<IReadOnlyList<GamesLeaderboardScore>> GetTopScoresAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults);
+        public abstract Task<IReadOnlyList<GamesLeaderboardScore>> GetTopScoresAsync(string leaderBoardId, GamesLeaderboardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults);
 
         /// <summary>
         /// Asynchronously submits a score to a leaderboard for the currently signed-in player. The score is ignored if it is worse 
@@ -256,7 +231,6 @@ namespace Plugin.Games
         /// </returns>
         public abstract Task<bool> SignInAsync();
 
-#if IOS || MACCATALYST
         /// <summary>
         /// Raised when the underlying Apple platform reports that a game capability is unavailable.
         /// Not all platforms provide this information. This event is specific to Apple Game Center.
@@ -267,22 +241,19 @@ namespace Plugin.Games
             => OnCapabilityUnavailable?.Invoke(this, capability);
 
         /// <summary>
-        /// Requests backend server sign in access to the games SDK for the current platform automatically in the background at app start.
-        /// </summary>
+        /// Requests backend server sign-in access to the games SDK for the current platform.
+        /// </summary>    
+        /// <param name="serverClientId">
+        /// (Android Only) The client ID of the server that will perform the authorization code flow exchange.
+        /// </param>
+        /// <param name="authScopes">
+        /// (Android Only) OAuth 2.0 permissions being requested, such as Email or Profile.
+        /// </param>
         /// <returns>
-        /// A Task that completes with an <see cref="GamesAuthResponse.Apple"/> containing <see cref="GamesAuthResponseApple"/>
+        /// A task that completes with a <see cref="GamesAuthResponse"/> containing platform-specific server authorization data.
         /// </returns>
-        public abstract Task<GamesAuthResponse> RequestServerSideAccessAsync();
-#elif ANDROID
-        /// <summary>
-        /// Requests backend server sign in access to the games SDK for the current platform automatically in the background at app start.
-        /// </summary>
-        /// <param name="serverClientId">The client ID of the server that will perform the authorization code flow exchange.</param>
-        /// <param name="authScopes">A list of <see cref="GamesAuthScope"/> values representing the OAuth 2.0 permissions being requested, such as <see cref="GamesAuthScope.Email"/>, <see cref="GamesAuthScope.Profile"/> and <see cref="GamesAuthScope.Email"/>.</param>
-        /// <returns>A Task that completes with an <see cref="GamesAuthResponse.Android"/> containing <see cref="GamesAuthResponseAndroid.AuthorizationCode"/> and a list of the AuthScopes that were effectively granted by the user (see description for details on consent). This authorization code can be exchanged by your server for an access token (and conditionally a refresh token) that can be used to access the Play Games Services web APIs and other Google Identity APIs.</returns>
         public abstract Task<GamesAuthResponse> RequestServerSideAccessAsync(string serverClientId, List<GamesAuthScope> authScopes);
-#endif
-
+        
         #endregion
     }
 }

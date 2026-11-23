@@ -35,6 +35,7 @@ namespace Plugin.Games
 
         private static GamesLeaderboardScoreBuffer GamesLeaderboardsScoreBuffer { get; set; } = new GamesLeaderboardScoreBuffer();
 
+        /// <inheritdoc />
         public override async Task ShowLeaderBoardsAsync()
         {
             var client = LeaderboardsClient;
@@ -53,16 +54,21 @@ namespace Plugin.Games
             }
         }
 
-        public override async Task ShowLeaderBoardsAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan)
+        /// <inheritdoc />        
+        public override async Task ShowLeaderBoardsAsync(string identifier, GamesLeaderboardTimeSpan timeSpan = GamesLeaderboardTimeSpan.Unknown, 
+            GamesLeaderboardCollection collection = GamesLeaderboardCollection.Unknown)
         {
             var client = LeaderboardsClient;
 
             try
             {
-                var intent = await client
-                    .GetLeaderboardIntent(leaderBoardId, timeSpan.ToNativeTimeSpan())
-                    .AsTask<Intent>();
-
+                Intent intent;
+                if(timeSpan is GamesLeaderboardTimeSpan.Unknown)
+                    intent = await client.GetLeaderboardIntent(identifier).AsTask<Intent>();
+                else if (collection is GamesLeaderboardCollection.Unknown)
+                    intent = await client.GetLeaderboardIntent(identifier, timeSpan.ToNativeTimeSpan()).AsTask<Intent>();
+                else
+                    intent = await client.GetLeaderboardIntent(identifier, timeSpan.ToNativeTimeSpan(), collection.ToNativeCollection()).AsTask<Intent>();
                 Activity.StartActivityForResult(intent, ShowLeaderboardsCode);
             }
             catch (Exception ex)
@@ -71,42 +77,7 @@ namespace Plugin.Games
             }
         }
 
-        public override async Task ShowLeaderBoardsAsync(string leaderBoardId)
-        {
-            var client = LeaderboardsClient;
-
-            try
-            {
-                var intent = await client
-                    .GetLeaderboardIntent(leaderBoardId)
-                    .AsTask<Intent>();
-
-                Activity.StartActivityForResult(intent, ShowLeaderboardsCode);
-            }
-            catch (Exception ex)
-            {
-                throw new GamesException(GamesError.FailedToShowLeaderboard, ex);
-            }
-        }
-
-        public override async Task ShowLeaderBoardsAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan, GamesLeaderboardCollection collection)
-        {
-            var client = LeaderboardsClient;
-
-            try
-            {
-                var intent = await client
-                    .GetLeaderboardIntent(leaderBoardId, timeSpan.ToNativeTimeSpan(), collection.ToNativeCollection())
-                    .AsTask<Intent>();
-
-                Activity.StartActivityForResult(intent, ShowLeaderboardsCode);
-            }
-            catch (Exception ex)
-            {
-                throw new GamesException(GamesError.FailedToShowLeaderboard, ex);
-            }
-        }
-
+        /// <inheritdoc />
         public override async Task<IReadOnlyList<GamesLeaderboard>> GetLeaderBoardDataAsync()
         {
             var client = LeaderboardsClient;
@@ -135,6 +106,7 @@ namespace Plugin.Games
             }
         }
 
+        /// <inheritdoc />
         public override async Task<GamesLeaderboard> GetLeaderBoardDataAsync(string leaderBoardId)
         {
             var client = LeaderboardsClient;
@@ -174,6 +146,7 @@ namespace Plugin.Games
             }
         }
 
+        /// <inheritdoc />
         public override async Task<IReadOnlyList<GamesLeaderboardScore>> GetMoreScoresAsync(int maxResults, GamesPageDirection direction)
         {
             var client = LeaderboardsClient;
@@ -215,7 +188,8 @@ namespace Plugin.Games
             }
         }
 
-        public override async Task<IReadOnlyList<GamesLeaderboardScore>> GetPlayerCenteredScoresAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults)
+        /// <inheritdoc />
+        public override async Task<IReadOnlyList<GamesLeaderboardScore>> GetPlayerCenteredScoresAsync(string leaderBoardId, GamesLeaderboardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults)
         {
             var client = LeaderboardsClient;
 
@@ -253,7 +227,8 @@ namespace Plugin.Games
             }
         }
 
-        public override async Task<IReadOnlyList<GamesLeaderboardScore>> GetTopScoresAsync(string leaderBoardId, GamesLeaderBoardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults)
+        /// <inheritdoc />
+        public override async Task<IReadOnlyList<GamesLeaderboardScore>> GetTopScoresAsync(string leaderBoardId, GamesLeaderboardTimeSpan timeSpan, GamesLeaderboardCollection collection, int maxResults)
         {
             var client = LeaderboardsClient;
 
@@ -291,6 +266,7 @@ namespace Plugin.Games
             }
         }
 
+        /// <inheritdoc />
         public override async Task<GamesScoreSubmission> SubmitScoreAsync(string leaderBoardId, long score, GamesScoreMetadata metaData = null)
         {
             var client = LeaderboardsClient;
