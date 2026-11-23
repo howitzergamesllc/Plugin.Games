@@ -7,9 +7,9 @@
     <AssemblyName>Plugin.Games</AssemblyName>
     <RootNamespace>Plugin.Games</RootNamespace>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <AssemblyVersion>11.0.0.0</AssemblyVersion>
-    <AssemblyFileVersion>11.0.0.0</AssemblyFileVersion>
-    <Version>11.0.0.0</Version>
+    <AssemblyVersion>11.0.10.0</AssemblyVersion>
+    <AssemblyFileVersion>11.0.10.0</AssemblyFileVersion>
+    <Version>11.0.10.0</Version>
     <Authors>Ian Howard</Authors>
     <Copyright>© 2026, Ian Howard, Howizer Games, LLC</Copyright>
     <PackageProjectUrl>https://github.com/howitzergamesllc/Plugin.Games</PackageProjectUrl>
@@ -67,12 +67,12 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="11.0.100" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.10" />
   </ItemGroup>
   
   <ItemGroup Condition=" $(TargetFramework.Contains('-android')) ">
     <PackageReference Include="Xamarin.GooglePlayServices.Games.V2" Version="122.0.0" />
-    <PackageReference Include="Microsoft.Maui.Essentials" Version="11.0.0" />
+    <PackageReference Include="Microsoft.Maui.Essentials" Version="11.0.10" />
   </ItemGroup>
 
 	<!-- iOS & MacCatalyst -->

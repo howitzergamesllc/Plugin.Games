@@ -12,7 +12,7 @@ dotnet add package Plugin.Games
 ## Package Reference
 ```xml
 <PropertyGroup>
-	<PackageReference Include="Plugin.Games" Version="11.0.0" />
+	<PackageReference Include="Plugin.Games" Version="11.0.10" />
 </PropertyGroup>
 ```
 
